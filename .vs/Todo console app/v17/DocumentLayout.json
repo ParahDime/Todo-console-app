@@ -3,12 +3,28 @@
   "WorkspaceRootPath": "C:\\Users\\Dec\\Documents\\Portfolio projects\\Todo console app\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|c:\\users\\dec\\documents\\portfolio projects\\todo console app\\todo console app\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
-      "RelativeMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|solutionrelative:todo console app\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
+      "AbsoluteMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|c:\\users\\dec\\documents\\portfolio projects\\todo console app\\todo console app\\schema.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}",
+      "RelativeMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|solutionrelative:todo console app\\schema.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|c:\\users\\dec\\documents\\portfolio projects\\todo console app\\todo console app\\seed.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}",
+      "RelativeMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|solutionrelative:todo console app\\seed.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|c:\\users\\dec\\documents\\portfolio projects\\todo console app\\todo console app\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|solutionrelative:todo console app\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|c:\\users\\dec\\documents\\portfolio projects\\todo console app\\todo console app\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|solutionrelative:todo console app\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|c:\\users\\dec\\documents\\portfolio projects\\todo console app\\todo console app\\schema.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}|CodeFrame",
+      "RelativeMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|solutionrelative:todo console app\\schema.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}|CodeFrame"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|c:\\users\\dec\\documents\\portfolio projects\\todo console app\\todo console app\\seed.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}|CodeFrame",
+      "RelativeMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|solutionrelative:todo console app\\seed.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}|CodeFrame"
     }
   ],
   "DocumentGroupContainers": [
@@ -18,11 +34,35 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "seed.sql ",
+              "DocumentMoniker": "C:\\Users\\Dec\\Documents\\Portfolio projects\\Todo console app\\Todo console app\\seed.sql",
+              "RelativeDocumentMoniker": "Todo console app\\seed.sql",
+              "ToolTip": "C:\\Users\\Dec\\Documents\\Portfolio projects\\Todo console app\\Todo console app\\seed.sql",
+              "RelativeToolTip": "Todo console app\\seed.sql",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2026-02-04T15:03:53.156Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "schema.sql ",
+              "DocumentMoniker": "C:\\Users\\Dec\\Documents\\Portfolio projects\\Todo console app\\Todo console app\\schema.sql",
+              "RelativeDocumentMoniker": "Todo console app\\schema.sql",
+              "ToolTip": "C:\\Users\\Dec\\Documents\\Portfolio projects\\Todo console app\\Todo console app\\schema.sql",
+              "RelativeToolTip": "Todo console app\\schema.sql",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
+              "WhenOpened": "2026-02-04T15:03:42.543Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
               "Title": ".gitignore",
               "DocumentMoniker": "C:\\Users\\Dec\\Documents\\Portfolio projects\\Todo console app\\Todo console app\\.gitignore",
               "RelativeDocumentMoniker": "Todo console app\\.gitignore",
@@ -35,7 +75,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Dec\\Documents\\Portfolio projects\\Todo console app\\Todo console app\\Program.cs",
               "RelativeDocumentMoniker": "Todo console app\\Program.cs",
