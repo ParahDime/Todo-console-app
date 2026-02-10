@@ -14,7 +14,8 @@ namespace TestConsoleApp
             System.Console.WriteLine("Starting...");
 
             //create instance
-
+            Data.Initialise(); //double check, how to test
+            Console.Write("Database initialised.");
             //populate / read data
 
 

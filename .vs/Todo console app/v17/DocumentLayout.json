@@ -3,24 +3,24 @@
   "WorkspaceRootPath": "C:\\Users\\Dec\\Documents\\Portfolio projects\\Todo console app\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|c:\\users\\dec\\documents\\portfolio projects\\todo console app\\todo console app\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
-      "RelativeMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|solutionrelative:todo console app\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
+      "AbsoluteMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|c:\\users\\dec\\documents\\portfolio projects\\todo console app\\todo console app\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|solutionrelative:todo console app\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|c:\\users\\dec\\documents\\portfolio projects\\todo console app\\todo console app\\data\\data.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|solutionrelative:todo console app\\data\\data.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|c:\\users\\dec\\documents\\portfolio projects\\todo console app\\todo console app\\data\\seed.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}",
+      "RelativeMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|solutionrelative:todo console app\\data\\seed.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|c:\\users\\dec\\documents\\portfolio projects\\todo console app\\todo console app\\data\\schema.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}",
       "RelativeMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|solutionrelative:todo console app\\data\\schema.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|c:\\users\\dec\\documents\\portfolio projects\\todo console app\\todo console app\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|solutionrelative:todo console app\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|c:\\users\\dec\\documents\\portfolio projects\\todo console app\\todo console app\\data\\seed.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}",
-      "RelativeMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|solutionrelative:todo console app\\data\\seed.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}"
+      "AbsoluteMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|c:\\users\\dec\\documents\\portfolio projects\\todo console app\\todo console app\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}",
+      "RelativeMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|solutionrelative:todo console app\\readme.md||{EFC0BB08-EA7D-40C6-A696-C870411A895B}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|c:\\users\\dec\\documents\\portfolio projects\\todo console app\\todo console app\\app.db||{8B382828-6202-11D1-8870-0000F87579D2}",
@@ -29,6 +29,14 @@
     {
       "AbsoluteMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|c:\\users\\dec\\documents\\portfolio projects\\todo console app\\todo console app\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
       "RelativeMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|solutionrelative:todo console app\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|c:\\users\\dec\\documents\\portfolio projects\\todo console app\\todo console app\\data\\schema.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}|CodeFrame",
+      "RelativeMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|solutionrelative:todo console app\\data\\schema.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}|CodeFrame"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|c:\\users\\dec\\documents\\portfolio projects\\todo console app\\todo console app\\data\\seed.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}|CodeFrame",
+      "RelativeMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|solutionrelative:todo console app\\data\\seed.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}|CodeFrame"
     }
   ],
   "DocumentGroupContainers": [
@@ -38,11 +46,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 4,
               "Title": "README.md",
               "DocumentMoniker": "C:\\Users\\Dec\\Documents\\Portfolio projects\\Todo console app\\Todo console app\\README.md",
               "RelativeDocumentMoniker": "Todo console app\\README.md",
@@ -61,7 +69,7 @@
               "RelativeDocumentMoniker": "Todo console app\\Data\\Data.cs",
               "ToolTip": "C:\\Users\\Dec\\Documents\\Portfolio projects\\Todo console app\\Todo console app\\Data\\Data.cs",
               "RelativeToolTip": "Todo console app\\Data\\Data.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAABQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-09T14:40:28.373Z",
               "EditorCaption": ""
@@ -80,25 +88,27 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "seed.sql",
+              "DocumentIndex": 2,
+              "Title": "seed.sql ",
               "DocumentMoniker": "C:\\Users\\Dec\\Documents\\Portfolio projects\\Todo console app\\Todo console app\\Data\\seed.sql",
               "RelativeDocumentMoniker": "Todo console app\\Data\\seed.sql",
               "ToolTip": "C:\\Users\\Dec\\Documents\\Portfolio projects\\Todo console app\\Todo console app\\Data\\seed.sql",
               "RelativeToolTip": "Todo console app\\Data\\seed.sql",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2026-02-04T15:03:53.156Z"
+              "WhenOpened": "2026-02-04T15:03:53.156Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "schema.sql",
+              "DocumentIndex": 3,
+              "Title": "schema.sql ",
               "DocumentMoniker": "C:\\Users\\Dec\\Documents\\Portfolio projects\\Todo console app\\Todo console app\\Data\\schema.sql",
               "RelativeDocumentMoniker": "Todo console app\\Data\\schema.sql",
               "ToolTip": "C:\\Users\\Dec\\Documents\\Portfolio projects\\Todo console app\\Todo console app\\Data\\schema.sql",
               "RelativeToolTip": "Todo console app\\Data\\schema.sql",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000826|",
-              "WhenOpened": "2026-02-04T15:03:42.543Z"
+              "WhenOpened": "2026-02-04T15:03:42.543Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -114,15 +124,16 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 0,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Dec\\Documents\\Portfolio projects\\Todo console app\\Todo console app\\Program.cs",
               "RelativeDocumentMoniker": "Todo console app\\Program.cs",
               "ToolTip": "C:\\Users\\Dec\\Documents\\Portfolio projects\\Todo console app\\Todo console app\\Program.cs",
               "RelativeToolTip": "Todo console app\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAcAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-04T14:15:37.662Z"
+              "WhenOpened": "2026-02-04T14:15:37.662Z",
+              "EditorCaption": ""
             }
           ]
         }

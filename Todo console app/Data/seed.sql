@@ -11,5 +11,11 @@ VALUES
 (2, 'Roy', 'Drink water', NULL, 0, 0),
 (3, 'Mark', 'Drink water', NULL, 0, 0);
 
-
+--Expenses (to look into frequency amount)
+INSERT INTO Expenses (id, userID, amount, frequency, title)
+VALUES
+(1, 'Roy', 50, 'Weekly', 'Cash ISA'),
+(2, 'Roy', 100, 'Monthly', 'Savings'),
+(3, 'Mark', 40, 'Weekly', 'Groceries')
+;
 
