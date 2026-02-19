@@ -39,6 +39,7 @@ namespace TestConsoleApp
             {
                 Console.WriteLine("Login successful");
                 Console.WriteLine($"Welcome, {username}");
+                Console.Clear();
                 return true;
             }
             else //user not in system
@@ -46,8 +47,10 @@ namespace TestConsoleApp
                 Console.WriteLine("Invalid Credentials");
                 Console.WriteLine("Press any key to continue");
                 Console.ReadKey();
+                Console.Clear();
                 return false;
             }
+
         }
 
         static void CreateAcc()
@@ -60,6 +63,21 @@ namespace TestConsoleApp
             Data.createUser(username, password);
             Console.WriteLine("User {0} has been initialised. Press any key to continue", username);
         }
+
+
+        //Terminates the program without redundant code in Main
+        static void TerminateProgram()
+        {
+            Console.Clear();
+            Console.WriteLine("Program Terminated"); //Message to be not redundant
+        }
+
+        static void Spacer(int lines)
+        {
+            for (int i = 0; i < lines; i++)
+                Console.WriteLine();
+        }
+
 
         static void Main(string[] args)
         {
@@ -92,18 +110,18 @@ namespace TestConsoleApp
             //auth loop to check if user in system
             while (!AccessGRANT)
             {
-                Console.WriteLine("");
+                Console.Clear();
+                Spacer(1);
                 Console.WriteLine("Please select an option");
                 Console.WriteLine("[1] : Login \n[2] : Create Account \n[0] : Exit");
                 Menu = Console.ReadKey();
+                Spacer(2);
 
-                Console.WriteLine();
-
-                switch(Menu.Key)
+                switch (Menu.Key)
                 {
                     case ConsoleKey.D1: //Login
                     case ConsoleKey.NumPad1:
-                        if(Login()) //if login successful
+                        if (Login()) //if login successful
                         {
                             AccessGRANT = true;
                         }
@@ -116,30 +134,32 @@ namespace TestConsoleApp
 
                     case ConsoleKey.D0: //Exit the progrram
                     case ConsoleKey.NumPad0:
-                        Console.WriteLine("Program Terminated");
+                        TerminateProgram();
                         return;
 
                     default:
                         Console.WriteLine("Invalid selection.\nPress any key to continue");
                         Console.ReadKey();
                         break;
-                }                
+                }
             }
 
             //items in program
-            while(Running)
+            while (Running)
             {
+                Console.Clear();
                 Console.WriteLine("Select Menu Option");
                 Console.WriteLine("[1] : To Do List");
                 Console.WriteLine("[2] : Expenses");
                 Console.WriteLine("[0] : Exit");
                 Menu = Console.ReadKey();
+                Spacer(2);
 
                 switch (Menu.Key)
                 {
                     case ConsoleKey.D1: //Go to ToDo List
                     case ConsoleKey.NumPad1:
-  
+
                         break;
 
                     case ConsoleKey.D2: //Go to Expenses
@@ -149,7 +169,7 @@ namespace TestConsoleApp
 
                     case ConsoleKey.D0: //Exit the progrram
                     case ConsoleKey.NumPad0:
-                        Console.WriteLine("Program Terminated");
+                        TerminateProgram();
                         return;
 
                     default:
@@ -158,6 +178,7 @@ namespace TestConsoleApp
                         break;
                 }
 
+                Console.Clear();
                 Console.WriteLine("Select SubMenu Option:");
                 Console.WriteLine("[1] : Add item");
                 Console.WriteLine("[2] : Remove Item");
@@ -167,6 +188,7 @@ namespace TestConsoleApp
                 Console.WriteLine("[0] : Exit");
 
                 SubMenu = Console.ReadKey();
+                Spacer(2);
 
                 switch (SubMenu.Key)
                 {
@@ -203,7 +225,7 @@ namespace TestConsoleApp
                         break;
                     case ConsoleKey.D0: //Exit the progrram
                     case ConsoleKey.NumPad0:
-                        Console.WriteLine("Program Terminated");
+                        TerminateProgram();
                         return;
                     default:
                         Console.WriteLine("Invalid selection.\nPress any key to continue");
