@@ -113,11 +113,11 @@ namespace TestConsoleApp
                 Console.WriteLine("Database populated");
             }
 
-            User person;
+            //User person;
             bool AccessGRANT = false;
             bool Running = true;
-            string tableName = "";
-
+            string tableName = null;
+            User person = null;
             ConsoleKeyInfo SubMenu;
             ConsoleKeyInfo Menu; //selects the menu
 
@@ -167,39 +167,42 @@ namespace TestConsoleApp
             //items in program
             while(Running)
             {
-                Console.WriteLine("Select Menu Option");
-                Console.WriteLine("[1] : To Do List");
-                Console.WriteLine("[2] : Expenses");
-                Console.WriteLine("[0] : Exit");
-                Menu = Console.ReadKey();
+                while (tableName == null) {
+                    tableName = null;
+                    Console.WriteLine("Select Menu Option");
+                    Console.WriteLine("[1] : To Do List");
+                    Console.WriteLine("[2] : Expenses");
+                    Console.WriteLine("[0] : Exit");
+                    Menu = Console.ReadKey();
 
-                switch (Menu.Key)
-                {
-                    case ConsoleKey.D1: //Go to ToDo List
-                    case ConsoleKey.NumPad1:
-                        tableName = "ActionsToDo";
-                        break;
+                    switch (Menu.Key)
+                    {
+                        case ConsoleKey.D1: //Go to ToDo List
+                        case ConsoleKey.NumPad1:
+                            tableName = "ActionsToDo";
+                            break;
 
-                    case ConsoleKey.D2: //Go to Expenses
-                    case ConsoleKey.NumPad2:
-                        tableName = "Expenses";
-                        break;
+                        case ConsoleKey.D2: //Go to Expenses
+                        case ConsoleKey.NumPad2:
+                            tableName = "Expenses";
+                            break;
 
-                    case ConsoleKey.D0: //Exit the progrram
-                    case ConsoleKey.NumPad0: 
-                        Console.WriteLine("Program Terminated");
-                        return;
+                        case ConsoleKey.D0: //Exit the progrram
+                        case ConsoleKey.NumPad0:
+                            Console.WriteLine("\n\nProgram Terminated");
+                            return;
 
-                    default:
-                        Console.WriteLine("Invalid selection.\nPress any key to continue");
-                        Console.ReadKey();
-                        break;
+                        default:
+                            Console.WriteLine("\n\nInvalid selection.\nPress any key to continue..");
+                            Console.ReadKey();
+                            break;
+                    }
+
+                    Console.Clear();
                 }
 
-                Console.Clear();
-
                 //print all items
-                TableData = Data.GetAllItems(tableName, 1);
+                TableData = Data.GetAllItems(tableName, person.Id);
                 PrintTable(TableData);
 
                 Console.WriteLine("Select SubMenu Option:");

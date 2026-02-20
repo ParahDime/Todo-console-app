@@ -201,16 +201,16 @@ namespace Todo_console_app.Data
 
 
         //list all items in a table
-        public static List<Dictionary<string, object>> GetAllItems(string table, int UserID)
+        public static List<Dictionary<string, object>> GetAllItems(string table, int UserId)
         {
             using var connection = new SqliteConnection(ConnectionString);
             var results = new List<Dictionary<string, object>>();
             connection.Open();
 
             var command = connection.CreateCommand();
-            command.CommandText = $"SELECT * FROM {table} WHERE UserId = @userID";
+            command.CommandText = $"SELECT * FROM {table} WHERE UserId = @UserId";
 
-            command.Parameters.AddWithValue("@userId", UserID);
+            command.Parameters.AddWithValue("@UserId", UserId);
             using var reader = command.ExecuteReader();
 
             //read data from sql query
