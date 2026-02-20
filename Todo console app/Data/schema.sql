@@ -1,9 +1,5 @@
 ﻿--Table for user information
 
---DROP TABLE IF EXISTS ActionsToDo;
---DROP TABLE IF EXISTS Expenses;
---DROP TABLE IF EXISTS Users;
-
 CREATE TABLE IF NOT EXISTS Users (
 	Username TEXT NOT NULL,
 	UserId INTEGER PRIMARY KEY,

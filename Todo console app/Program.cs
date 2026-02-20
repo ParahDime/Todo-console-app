@@ -1,8 +1,11 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using System;
-using Todo_console_app.Data;
 using Microsoft.Data.Sqlite;
+using System;
+using System.IO.Pipes;
+using Todo_console_app.Data;
+using Todo_console_app.Users;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 //for hashing passswords
 
 namespace TestConsoleApp
@@ -10,6 +13,32 @@ namespace TestConsoleApp
     internal class Program
     {
 
+        //print all information on the table
+        public static void PrintTable(List<Dictionary <string, object>> TableData)
+        {
+            if (TableData.Count == 0) //empty table
+            {
+                Console.WriteLine("No data found.");
+                return;
+            }
+            var columns = TableData[0].Keys;
+
+            foreach (var col in columns)
+            {
+                Console.Write($"{col,-15} | ");
+            }
+            Console.WriteLine("\n");
+            
+            foreach(var row in TableData)
+            {
+                foreach(var col in columns)
+                {
+                    Console.Write($"{row[col],-15} | ");
+                }
+                Console.WriteLine();
+            }
+
+        }
 
         //used when empty strings not allowed
         static string ReadRequiredInput(string prompt)
@@ -27,7 +56,7 @@ namespace TestConsoleApp
         }
 
         //login
-        static bool Login()
+        static User Login()
         {
             //ask for user information
             string username = ReadRequiredInput("Please enter your username ");
@@ -37,16 +66,17 @@ namespace TestConsoleApp
             //check if in systems
             if (Data.validateUser(username, password))
             {
+                User person = Data.GetUser(username);
                 Console.WriteLine("Login successful");
                 Console.WriteLine($"Welcome, {username}");
-                return true;
+                return person;
             }
             else //user not in system
             {
                 Console.WriteLine("Invalid Credentials");
                 Console.WriteLine("Press any key to continue");
                 Console.ReadKey();
-                return false;
+                return null;
             }
         }
 
@@ -83,11 +113,18 @@ namespace TestConsoleApp
                 Console.WriteLine("Database populated");
             }
 
+            User person;
             bool AccessGRANT = false;
             bool Running = true;
-            ConsoleKeyInfo SubMenu;
+            string tableName = "";
 
+            ConsoleKeyInfo SubMenu;
             ConsoleKeyInfo Menu; //selects the menu
+
+            List<Dictionary<string, object>> TableData;
+
+
+
             Console.Clear();
             //auth loop to check if user in system
             while (!AccessGRANT)
@@ -103,7 +140,8 @@ namespace TestConsoleApp
                 {
                     case ConsoleKey.D1: //Login
                     case ConsoleKey.NumPad1:
-                        if(Login()) //if login successful
+                        person = Login();
+                        if(person != null) //if login successful
                         {
                             AccessGRANT = true;
                         }
@@ -139,16 +177,16 @@ namespace TestConsoleApp
                 {
                     case ConsoleKey.D1: //Go to ToDo List
                     case ConsoleKey.NumPad1:
-  
+                        tableName = "ActionsToDo";
                         break;
 
                     case ConsoleKey.D2: //Go to Expenses
                     case ConsoleKey.NumPad2:
-
+                        tableName = "Expenses";
                         break;
 
                     case ConsoleKey.D0: //Exit the progrram
-                    case ConsoleKey.NumPad0:
+                    case ConsoleKey.NumPad0: 
                         Console.WriteLine("Program Terminated");
                         return;
 
@@ -158,13 +196,19 @@ namespace TestConsoleApp
                         break;
                 }
 
+                Console.Clear();
+
+                //print all items
+                TableData = Data.GetAllItems(tableName, 1);
+                PrintTable(TableData);
+
                 Console.WriteLine("Select SubMenu Option:");
                 Console.WriteLine("[1] : Add item");
                 Console.WriteLine("[2] : Remove Item");
                 Console.WriteLine("[3] : Get item description");
                 Console.WriteLine("[4] : Edit item in list");
                 Console.WriteLine("[5] : Mark as completed");
-                Console.WriteLine("[0] : Exit");
+                Console.WriteLine("[0] : Return to menu");
 
                 SubMenu = Console.ReadKey();
 

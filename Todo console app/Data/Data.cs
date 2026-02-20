@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using Todo_console_app.Users;
 using System.Reflection.PortableExecutable;
 using System.Security.Cryptography;
 using System.Text;
@@ -83,6 +84,7 @@ namespace Todo_console_app.Data
 
             return count == 0;
         }
+
         //create a salt for passwords
         public static string GenerateSalt()
         {
@@ -105,6 +107,7 @@ namespace Todo_console_app.Data
             return Convert.ToBase64String(hash);
         }
 
+        
         //check the username exists
         public static bool validateUser(string username, string password)
         {
@@ -141,6 +144,30 @@ namespace Todo_console_app.Data
                 );
         }
 
+        public static User GetUser(string username)
+        {
+            using var connection = new SqliteConnection(ConnectionString);
+            connection.Open();
+
+            var command = connection.CreateCommand();
+            command.CommandText = "SELECT UserId, Username FROM Users WHERE Username = @Username";
+            command.Parameters.AddWithValue("@Username", username);
+
+            using var reader = command.ExecuteReader();
+
+            if (reader.Read())
+            {
+                return new User
+                {
+                    Id = reader.GetInt32(0),
+                    Username = reader.GetString(1)
+                };
+            }
+
+            // 5. If no user was found, return null
+            return null;
+        }
+
         public static void createUser(string username, string password)
         {
             string salt = GenerateSalt();
@@ -162,6 +189,42 @@ namespace Todo_console_app.Data
             command.Parameters.AddWithValue("@PasswordHash", password);
 
             var result = command.ExecuteScalar();
+        }
+        //count all items within a table
+        /*public static void GetCount(string table)
+        {
+            using var connection = new SqliteConnection(ConnectionString);
+
+
+        }
+        */
+
+
+        //list all items in a table
+        public static List<Dictionary<string, object>> GetAllItems(string table, int UserID)
+        {
+            using var connection = new SqliteConnection(ConnectionString);
+            var results = new List<Dictionary<string, object>>();
+            connection.Open();
+
+            var command = connection.CreateCommand();
+            command.CommandText = $"SELECT * FROM {table} WHERE UserId = @userID";
+
+            command.Parameters.AddWithValue("@userId", UserID);
+            using var reader = command.ExecuteReader();
+
+            //read data from sql query
+            while (reader.Read())
+            {
+                var row = new Dictionary<string, object>();
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    // reader.GetName(i) gets the column name from the SQL result
+                    row.Add(reader.GetName(i), reader.GetValue(i));
+                }
+                results.Add(row);
+            }
+            return results;
         }
     }
 }
