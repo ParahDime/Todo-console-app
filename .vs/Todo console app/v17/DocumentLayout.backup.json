@@ -7,8 +7,8 @@
       "RelativeMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|solutionrelative:todo console app\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|c:\\users\\dec\\documents\\portfolio projects\\todo console app\\todo console app\\data\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|solutionrelative:todo console app\\data\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|c:\\users\\dec\\documents\\portfolio projects\\todo console app\\todo console app\\secrets.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|solutionrelative:todo console app\\secrets.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|c:\\users\\dec\\documents\\portfolio projects\\todo console app\\todo console app\\data\\seed.sql||{CC5D8DF0-88F4-4BB2-9DBB-B48CEE65C30A}",
@@ -19,8 +19,8 @@
       "RelativeMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|solutionrelative:todo console app\\data\\data.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|c:\\users\\dec\\documents\\portfolio projects\\todo console app\\todo console app\\secrets.txt||{8B382828-6202-11D1-8870-0000F87579D2}",
-      "RelativeMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|solutionrelative:todo console app\\secrets.txt||{8B382828-6202-11D1-8870-0000F87579D2}"
+      "AbsoluteMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|c:\\users\\dec\\documents\\portfolio projects\\todo console app\\todo console app\\data\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|solutionrelative:todo console app\\data\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{C8E03CBF-AA26-4BAF-88F5-06F608C51DD3}|Todo console app\\Todo console app.csproj|c:\\users\\dec\\documents\\portfolio projects\\todo console app\\todo console app\\.gitignore||{3B902123-F8A7-4915-9F01-361F908088D0}",
@@ -46,7 +46,7 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "User.cs",
               "DocumentMoniker": "C:\\Users\\Dec\\Documents\\Portfolio projects\\Todo console app\\Todo console app\\Data\\User.cs",
               "RelativeDocumentMoniker": "Todo console app\\Data\\User.cs",
@@ -54,12 +54,11 @@
               "RelativeToolTip": "Todo console app\\Data\\User.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-20T14:31:00.388Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-20T14:31:00.388Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 1,
               "Title": "secrets.txt",
               "DocumentMoniker": "C:\\Users\\Dec\\Documents\\Portfolio projects\\Todo console app\\Todo console app\\secrets.txt",
               "RelativeDocumentMoniker": "Todo console app\\secrets.txt",
@@ -67,7 +66,8 @@
               "RelativeToolTip": "Todo console app\\secrets.txt",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
-              "WhenOpened": "2026-02-18T14:46:55.917Z"
+              "WhenOpened": "2026-02-18T14:46:55.917Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -89,7 +89,7 @@
               "RelativeDocumentMoniker": "Todo console app\\Data\\Data.cs",
               "ToolTip": "C:\\Users\\Dec\\Documents\\Portfolio projects\\Todo console app\\Todo console app\\Data\\Data.cs",
               "RelativeToolTip": "Todo console app\\Data\\Data.cs",
-              "ViewState": "AgIAAIAAAAAAAAAAAADwv5AAAABBAAAAAAAAAA==",
+              "ViewState": "AgIAAFAAAAAAAAAAAAAYwDIAAAA/AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-09T14:40:28.373Z",
               "EditorCaption": ""
@@ -124,9 +124,9 @@
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Dec\\Documents\\Portfolio projects\\Todo console app\\Todo console app\\Program.cs",
               "RelativeDocumentMoniker": "Todo console app\\Program.cs",
-              "ToolTip": "C:\\Users\\Dec\\Documents\\Portfolio projects\\Todo console app\\Todo console app\\Program.cs*",
-              "RelativeToolTip": "Todo console app\\Program.cs*",
-              "ViewState": "AgIAABwAAAAAAAAAAAAQwCwAAAA5AAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Dec\\Documents\\Portfolio projects\\Todo console app\\Todo console app\\Program.cs",
+              "RelativeToolTip": "Todo console app\\Program.cs",
+              "ViewState": "AgIAAPEAAAAAAAAAAAAAAP4AAAARAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-04T14:15:37.662Z",
               "EditorCaption": ""

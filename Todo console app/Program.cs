@@ -3,6 +3,7 @@
 using Microsoft.Data.Sqlite;
 using System;
 using System.IO.Pipes;
+using System.Runtime.CompilerServices;
 using Todo_console_app.Data;
 using Todo_console_app.Users;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -14,15 +15,28 @@ namespace TestConsoleApp
     {
 
         //print all information on the table
-        public static void PrintTable(List<Dictionary <string, object>> TableData)
+        public static void PrintTable(List<Dictionary <string, object>> TableData, string TableName)
         {
             if (TableData.Count == 0) //empty table
             {
                 Console.WriteLine("No data found.");
                 return;
             }
-            string[] columns = { "Id", "Title", "Is_Complete" };
 
+            string[] columns;
+            if (TableName == "ActionsToDo")
+            {
+                columns = new string[] { "Id", "Title", "Is_Complete" };
+            }
+            else if (TableName == "Expenses")
+            {
+                columns = new string[] { "Id", "Title", "Amount" };
+            }
+            else
+            {
+                //if table is unknown
+                columns = new string[] { "Id", "Title" };
+            }
             //writes the titles of columns
             foreach (var col in columns)
             {
@@ -32,20 +46,30 @@ namespace TestConsoleApp
 
             foreach (var row in TableData)
             {
-                // 1. Get the raw values from the dictionary
-                string id = row["Id"].ToString();
-                string title = row["Title"].ToString();
+                foreach (var col in columns)
+                {
+                    if (!row.ContainsKey(col)) continue;
 
-                // 2. Convert the 0/1 integer to Yes/No
-                // We cast to int (or long depending on your SQLite driver) then compare
-                int completeValue = Convert.ToInt32(row["Is_Complete"]);
-                string status = (completeValue == 1) ? "Yes" : "No";
+                    object value = row[col];
+                    string output = value?.ToString() ?? "N/A";
 
-                // 3. Print the formatted row
-                Console.WriteLine($"{id,-15} | {title,-15} | {status,-8}");
+                    if (col == "Is_Complete")
+                    {
+                        int completeValue = Convert.ToInt32(value);
+                        output = (completeValue == 1) ? "Yes" : "No";
+                    }
+
+                    if (col == "Amount")
+                    {
+                        output = $"£{Convert.ToDouble(value):F2}";
+                    }
+
+                    Console.Write($"{output,-15} | ");
+                }
+                Console.WriteLine();
             }
 
-            }
+        }
 
         public static void Buffer(string prompt)
         {
@@ -255,7 +279,7 @@ namespace TestConsoleApp
 
                 //print all items
                 TableData = Data.GetAllItems(TableName, person.Id);
-                PrintTable(TableData);
+                PrintTable(TableData, TableName);
 
                 Console.WriteLine("Select SubMenu Option:");
                 Console.WriteLine("[1] : Add item");
@@ -352,8 +376,9 @@ namespace TestConsoleApp
                     case ConsoleKey.NumPad4:
                         Console.WriteLine("[4] : Edit item in list\n");
                         NumberId = ReadRequiredInt("Select item number you wish to edit: ");
-                           
+
                         //select data to modify
+                        Console.WriteLine("Select which part you would like to edit: ");
 
                         //confirm
 
@@ -376,11 +401,11 @@ namespace TestConsoleApp
                         {
                             if (Data.RemoveCompletedItems(person))
                             {
-
+                                Buffer("Completed items were removed successfully");
                             }
                             else
                             {
-                                
+                                Buffer("No items were deleted");
                             }
                         }
                         else 
@@ -403,9 +428,15 @@ namespace TestConsoleApp
                         Console.WriteLine("[8] : Calculate current list completion\n");
 
                         double CompletionAmount = Data.GetCompletedAmount(person);
-
-                        //output amount
-                        break;
+                        if (CompletionAmount > 0)
+                        {
+                            Buffer($"{CompletionAmount}% of all tasks are marked as completed");
+                        }
+                        else
+                        {
+                            Buffer("An error occured");
+                        }
+                            break;
                     case ConsoleKey.D5 when TableName == "Expenses": //Mark as completed
                     case ConsoleKey.NumPad5 when TableName == "Expenses":
                         Console.WriteLine("[5] : Total Monthly spend\n");
