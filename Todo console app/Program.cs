@@ -21,38 +21,90 @@ namespace TestConsoleApp
                 Console.WriteLine("No data found.");
                 return;
             }
-            var columns = TableData[0].Keys;
+            string[] columns = { "Id", "Title", "Is_Complete" };
 
+            //writes the titles of columns
             foreach (var col in columns)
             {
                 Console.Write($"{col,-15} | ");
             }
             Console.WriteLine("\n");
-            
-            foreach(var row in TableData)
+
+            foreach (var row in TableData)
             {
-                foreach(var col in columns)
-                {
-                    Console.Write($"{row[col],-15} | ");
-                }
-                Console.WriteLine();
+                // 1. Get the raw values from the dictionary
+                string id = row["Id"].ToString();
+                string title = row["Title"].ToString();
+
+                // 2. Convert the 0/1 integer to Yes/No
+                // We cast to int (or long depending on your SQLite driver) then compare
+                int completeValue = Convert.ToInt32(row["Is_Complete"]);
+                string status = (completeValue == 1) ? "Yes" : "No";
+
+                // 3. Print the formatted row
+                Console.WriteLine($"{id,-15} | {title,-15} | {status,-8}");
             }
 
+            }
+
+        public static void Buffer(string prompt)
+        {
+            Console.WriteLine($"{prompt}. Press any key to continue.");
+            Console.ReadKey();
         }
 
         //used when empty strings not allowed
         static string ReadRequiredInput(string prompt)
         {
-            string? input;
+            string? Input;
 
             do
             {
-                Console.Write(prompt);
-                input = Console.ReadLine();
+                Console.WriteLine(prompt);
+                Input = Console.ReadLine();
             }
-            while (string.IsNullOrWhiteSpace(input));
+            while (string.IsNullOrWhiteSpace(Input));
 
-            return input; // Safe: guaranteed non-null
+            return Input; // Safe: guaranteed non-null
+        }
+
+        static char ReadRequiredChar(string prompt)
+        {
+            string Input;
+            char ParseInput = ' ';
+
+            do
+            {
+                Console.WriteLine(prompt);
+                Input = Console.ReadLine();
+                try
+                {
+                    ParseInput = Input[0];
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+
+            } while (ParseInput != 'y' && ParseInput != 'n');
+
+            return ParseInput;
+        }
+
+        static int ReadRequiredInt(string prompt)
+        {
+            string Input;
+            int ParseInput;
+            bool IsValid = false;
+
+            do
+            {
+                Console.WriteLine(prompt);
+                Input = Console.ReadLine();
+                IsValid = int.TryParse(Input, out ParseInput);
+            } while (!IsValid);
+
+            return ParseInput;
         }
 
         //login
@@ -73,9 +125,7 @@ namespace TestConsoleApp
             }
             else //user not in system
             {
-                Console.WriteLine("Invalid Credentials.");
-                Console.WriteLine("Press any key to continue.\n\n");
-                Console.ReadKey();
+                Buffer("Invalid Credentials.");
                 return null;
             }
         }
@@ -83,12 +133,12 @@ namespace TestConsoleApp
         static void CreateAcc()
         {
             //get user details
-            string username = ReadRequiredInput("Please enter a username:    ");
-            string password = ReadRequiredInput("Please enter a password:    ");
+            string Username = ReadRequiredInput("Please enter a username:    ");
+            string Password = ReadRequiredInput("Please enter a password:    ");
 
             //input into sql database
-            Data.createUser(username, password);
-            Console.WriteLine("User {0} has been initialised. Press any key to continue", username);
+            Data.createUser(Username, Password);
+            Buffer($"User {Username} has been initialised");
         }
 
         static void Main(string[] args)
@@ -117,8 +167,7 @@ namespace TestConsoleApp
             bool AccessGRANT = false;
             bool Running = true;
             string TableName = null;
-            char YesNo = ' ';
-            int NumberId = 0;
+            
 
 
 
@@ -163,8 +212,7 @@ namespace TestConsoleApp
                         return;
 
                     default:
-                        Console.WriteLine("Invalid selection.\nPress any key to continue");
-                        Console.ReadKey();
+                        Buffer("Invalid selection");
                         break;
                 }                
             }
@@ -198,8 +246,7 @@ namespace TestConsoleApp
                             return;
 
                         default:
-                            Console.WriteLine("\n\nInvalid selection.\nPress any key to continue..");
-                            Console.ReadKey();
+                            Buffer("\n\nInvalid selection");
                             break;
                     }
 
@@ -237,6 +284,9 @@ namespace TestConsoleApp
                 SubMenu = Console.ReadKey();
                 string Name = null;
                 string Description = null;
+                char YesNo = ' ';
+                int NumberId = 0;
+
                 switch (SubMenu.Key)
                 {
                     case ConsoleKey.D1: //Add Item
@@ -245,57 +295,75 @@ namespace TestConsoleApp
                         Name = ReadRequiredInput("Enter item name: ");
                         Description = ReadRequiredInput("Enter the item description: ");
 
-                        Console.WriteLine("Are these details correct? y/n");
                         Console.WriteLine($"Name: {Name}\n Description: {Description}");
+                        YesNo = ReadRequiredChar("Are these details correct? y/n");
+                        
+                         if(YesNo == 'y')
+                         {
+                            if(Data.AddToDoItem(Name, Description, person))
+                            { 
+                                Buffer($"{Name} was successfully added to the database");
+                            }
+                            else
+                            {
+                                Buffer("An error occured");
+                            }
 
-                        //write function to get character input
-                        /*
-                         if(yesno = 'y')
-                        {
-                             Data.AddItem(); //make into bool function
-
-                        }
-                        else 
-                        {
-                             Console.WriteLine("Input was not added. Press any key to continue);
-                             Console.ReadKey();
-                        }
-                         */
+                         }
+                         else //No or not the correct input
+                         {
+                            Buffer("Input was not added");
+                         }
+                         
                         break;
                     case ConsoleKey.D2: //Remove Item
                     case ConsoleKey.NumPad2:
                         Console.WriteLine("[2] : Remove Item\n");
-                        Name = ReadRequiredInput("Enter item ID you wish to remove: ");
-                        //take input from the user
-                        //Console.WriteLine("Are you sure you want to remove {ActualName}?\n y/n);
-                        /*if(y)
+                        int removeNum = ReadRequiredInt("Enter item ID you wish to remove: ");
+                        //input number
+                        YesNo = ReadRequiredChar($"Remove item {removeNum}? \n y/n");
+                        if(YesNo == 'y')
                         {
-
+                            if (Data.RemoveItem(TableName, removeNum)) 
+                            {
+                                Buffer($"{Name} was removed successfully");
+                            }
+                            else
+                            {
+                                Buffer("An error occured");
+                            }
                         }
-                        else //n
+                        else //no / not proper input
                         {
+                            Buffer("Input was not removed");
                         }
-                        */
-                        //yn delete, keep and loop to submenu
+                        
                         break;
                     case ConsoleKey.D3: //Get Item Description
                     case ConsoleKey.NumPad3:
                         Console.WriteLine("[3] : Get item description\n");
-                        Console.WriteLine("Please enter item number: ");
-                        //check, 
-                        //yn show, error msg
+                        NumberId = ReadRequiredInt("Please enter item number: ");
+
+                        Data.GetItemData(NumberId, TableName);
+                        //Display data
+                        Buffer("");
                         break;
                     case ConsoleKey.D4: //Edit Item
                     case ConsoleKey.NumPad4:
                         Console.WriteLine("[4] : Edit item in list\n");
-                        Console.WriteLine("Select item number you wish to edit: ");
-                        //same as 3
+                        NumberId = ReadRequiredInt("Select item number you wish to edit: ");
+                           
+                        //select data to modify
+
+                        //confirm
+
+                        //yn
                         break;
                     case ConsoleKey.D5 when TableName == "ActionsToDo": //Mark as completed
                     case ConsoleKey.NumPad5 when TableName == "ActionsToDo":
                         Console.WriteLine("[5] : Mark as completed\n");
-                        Console.WriteLine("Enter ID number you want to mark as completed");
-                        //take user input
+                        NumberId = ReadRequiredInt("Enter ID number you want to mark as completed");
+
                         //check on list
                         //if in list, show
                         //if not, error message
@@ -303,33 +371,45 @@ namespace TestConsoleApp
                     case ConsoleKey.D6 when TableName == "ActionsToDo": //Remove completed items
                     case ConsoleKey.NumPad6 when TableName == "ActionsToDo":
                         Console.WriteLine("[6] : Remove completed items\n");
-                        Console.WriteLine("Do you wish to remove completed items? y'n");
-                        /*if(y)
-                         {
+                        YesNo = ReadRequiredChar("Do you wish to remove completed items? y'n");
+                        if(YesNo == 'y')
+                        {
+                            if (Data.RemoveCompletedItems(person))
+                            {
+
+                            }
+                            else
+                            {
+                                
+                            }
                         }
                         else 
                         {
-                            Console.WriteLine("Item was not removed.");
-                            Console.WriteLine("Press any key to continue);
-                            Console.ReadKey();
+                            Buffer("Item was not removed.");
                         }
-                        */
+                        
                         break;
                     case ConsoleKey.D7 when TableName == "ActionsToDo": //Recent items added
                     case ConsoleKey.NumPad7 when TableName == "ActionsToDo":
                         Console.WriteLine("[7] : Recent items added\n");
-                        //query, sort by date, then output
+
+                        Data.ShowRecentItems(person); //query, sort by date, then output
+
+                        Buffer("");
+                        
                         break;
                     case ConsoleKey.D8 when TableName == "ActionsToDo": //Calc list completion
                     case ConsoleKey.NumPad8 when TableName == "ActionsToDo":
                         Console.WriteLine("[8] : Calculate current list completion\n");
-                        //compare items listed as done to total, output %
+
+                        double CompletionAmount = Data.GetCompletedAmount(person);
+
+                        //output amount
                         break;
                     case ConsoleKey.D5 when TableName == "Expenses": //Mark as completed
                     case ConsoleKey.NumPad5 when TableName == "Expenses":
                         Console.WriteLine("[5] : Total Monthly spend\n");
                         Console.WriteLine("Enter ID number you want to mark as completed");
-                        //same as 3
                         break;
                     case ConsoleKey.D6 when TableName == "ActionsToDo": //Remove completed items
                     case ConsoleKey.NumPad6 when TableName == "ActionsToDo":
@@ -338,12 +418,10 @@ namespace TestConsoleApp
                         break;
                     case ConsoleKey.D0: //Exit the progrram
                     case ConsoleKey.NumPad0:
-                        Console.WriteLine("Returning to main menu. Press any key to continue");
-                        Console.ReadKey();
+                        Buffer("Returning to main menu");
                         break;
                     default:
-                        Console.WriteLine("Invalid selection.\nPress any key to continue");
-                        Console.ReadKey();
+                       Buffer("Invalid selection");
                         break;
                 }
                 TableName = null;
