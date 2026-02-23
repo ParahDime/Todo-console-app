@@ -10,7 +10,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Todo_console_app.Users;
+using Todo_console_app.Updates;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using static Todo_console_app.Updates.Update;
 
 namespace Todo_console_app.Data
 {
@@ -150,6 +152,42 @@ namespace Todo_console_app.Data
 
             return results;
         }
+
+        public static UpdateResult MarkCompleted(int Id, User person)
+        {
+            try
+            {
+                using var connection = new SqliteConnection(ConnectionString);
+                connection.Open();
+
+                // 1. Check if the item exists and what its current status is
+                var checkCmd = connection.CreateCommand();
+                checkCmd.CommandText = "SELECT Is_Complete FROM ActionsToDo WHERE Id = @Id AND UserId = @UserId";
+                checkCmd.Parameters.AddWithValue("@Id", Id);
+                checkCmd.Parameters.AddWithValue("@UserId", person.Id);
+
+                var result = checkCmd.ExecuteScalar();
+
+                if (result == null)
+                    return UpdateResult.NotFound;
+
+                if (Convert.ToInt32(result) == 1)
+                    return UpdateResult.AlreadyCompleted;
+
+                var updateCmd = connection.CreateCommand();
+                updateCmd.CommandText = "UPDATE ActionsToDo SET Is_Complete = 1 WHERE Id = @Id";
+                updateCmd.Parameters.AddWithValue("@Id", Id);
+
+                updateCmd.ExecuteNonQuery();
+                return UpdateResult.Success;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"DB Error: {ex.Message}");
+                return UpdateResult.Error;
+            }
+        }
+
         public static bool RemoveCompletedItems(User person) //removes all comp items relating to user
         {
             if (person == null) return false;

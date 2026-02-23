@@ -6,6 +6,7 @@ using System.IO.Pipes;
 using System.Runtime.CompilerServices;
 using Todo_console_app.Data;
 using Todo_console_app.Users;
+using Todo_console_app.Updates;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 //for hashing passswords
 
@@ -37,7 +38,7 @@ namespace TestConsoleApp
                 //if table is unknown
                 columns = new string[] { "Id", "Title" };
             }
-            //writes the titles of columns
+
             foreach (var col in columns)
             {
                 Console.Write($"{col,-15} | ");
@@ -71,6 +72,35 @@ namespace TestConsoleApp
 
         }
 
+        public static void DisplayItemDetails(Dictionary<string, object> ItemData)
+        {
+            if (ItemData == null || ItemData.Count == 0)
+            {
+                Console.WriteLine("No item found with that ID.");
+                return;
+            }
+
+            Console.WriteLine("\n--- ITEM DETAILS ---");
+
+            foreach (var entry in ItemData)
+            {
+                string label = entry.Key.Replace("_", " ");
+                label = char.ToUpper(label[0]) + label.Substring(1);
+
+                string displayValue;
+                if (entry.Key.ToLower() == "is_complete")
+                {
+                    displayValue = Convert.ToInt32(entry.Value) == 1 ? "Yes" : "No";
+                }
+                else
+                {
+                    displayValue = entry.Value?.ToString() ?? "N/A";
+                }
+
+                Console.WriteLine($"{label,-15}: {displayValue}");
+            }
+            Console.WriteLine("---------------------\n");
+        }
         public static void Buffer(string prompt)
         {
             Console.WriteLine($"{prompt}. Press any key to continue.");
@@ -89,7 +119,7 @@ namespace TestConsoleApp
             }
             while (string.IsNullOrWhiteSpace(Input));
 
-            return Input; // Safe: guaranteed non-null
+            return Input;
         }
 
         static char ReadRequiredChar(string prompt)
@@ -368,8 +398,9 @@ namespace TestConsoleApp
                         Console.WriteLine("[3] : Get item description\n");
                         NumberId = ReadRequiredInt("Please enter item number: ");
 
-                        Data.GetItemData(NumberId, TableName);
-                        //Display data
+                        Dictionary<string, object>  ItemInfo = Data.GetItemData(NumberId, TableName);
+
+                        DisplayItemDetails(ItemInfo);
                         Buffer("");
                         break;
                     case ConsoleKey.D4: //Edit Item
@@ -389,9 +420,25 @@ namespace TestConsoleApp
                         Console.WriteLine("[5] : Mark as completed\n");
                         NumberId = ReadRequiredInt("Enter ID number you want to mark as completed");
 
-                        //check on list
-                        //if in list, show
-                        //if not, error message
+                        UpdateResult update = Data.MarkCompleted(NumberId, person);
+                        switch (update)
+                        {
+                            case UpdateResult.Success:
+                                Buffer("Task marked as completed");
+                                break;
+
+                            case UpdateResult.NotFound:
+                                Buffer("Task was not found");
+                                break;
+
+                            case UpdateResult.AlreadyCompleted:
+                                Buffer("Task already marked as completed");
+                                break;
+
+                            case UpdateResult.Error:
+                                Buffer("A database error occurred.");
+                                break;
+                        }
                         break;
                     case ConsoleKey.D6 when TableName == "ActionsToDo": //Remove completed items
                     case ConsoleKey.NumPad6 when TableName == "ActionsToDo":
