@@ -12,6 +12,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace TestConsoleApp
 {
+   
     internal class Program
     {
 
@@ -340,6 +341,8 @@ namespace TestConsoleApp
                 string Description = null;
                 char YesNo = ' ';
                 int NumberId = 0;
+                int Amount;
+                Frequency frequency; //expenses handler
 
                 switch (SubMenu.Key)
                 {
@@ -347,10 +350,20 @@ namespace TestConsoleApp
                     case ConsoleKey.NumPad1:
                         Console.WriteLine("[1] : Add item\n");
                         Name = ReadRequiredInput("Enter item name: ");
-                        Description = ReadRequiredInput("Enter the item description: ");
+                        if (TableName == "ActionsToDo")
+                        {
 
-                        Console.WriteLine($"Name: {Name}\n Description: {Description}");
-                        YesNo = ReadRequiredChar("Are these details correct? y/n");
+                            Description = ReadRequiredInput("Enter the item description: ");
+                            Console.WriteLine($"Name: {Name}\n Description: {Description}");
+                        }
+                        else //table name == expenses
+                        {
+                            Amount = ReadRequiredInt("Enter the amount (in £): ");
+                            //frequency = ReadRequiredInt("Enter how often the expense occurs\n[1] Daily\n[2] Weekly\n[3] Monthly");
+                            Console.WriteLine($"Name: {Name}\n Amount: {Amount} \n Frequency: ");
+
+                        }
+                            YesNo = ReadRequiredChar("Are these details correct? y/n");
                         
                          if(YesNo == 'y')
                          {
