@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Todo_console_app.Data
+namespace Todo_console_app.Frequency
 {
     internal class Frequency
     {

@@ -9,9 +9,11 @@ using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
-using Todo_console_app.Users;
+using Todo_console_app.Frequency;
 using Todo_console_app.Updates;
+using Todo_console_app.Users;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using static Todo_console_app.Frequency.Frequency;
 using static Todo_console_app.Updates.Update;
 
 namespace Todo_console_app.Data
@@ -86,7 +88,92 @@ namespace Todo_console_app.Data
 
             return count == 0;
         }
-        
+
+        public static List<Dictionary<string, object>> GetExpensesList(User person) //Gets the expenses list in order
+        {
+            var results = new List<Dictionary<string, object>>();
+
+            try
+            {
+                using var connection = new SqliteConnection(ConnectionString);
+                connection.Open();
+
+                var command = connection.CreateCommand();
+
+                command.CommandText = @"
+                SELECT *, 
+                CASE 
+                    WHEN Frequency = 'Daily' THEN Amount * 30
+                    WHEN Frequency = 'Weekly' THEN Amount * 4
+                    ELSE Amount 
+                END AS MonthlyCost
+                FROM Expenses 
+                WHERE UserId = @userId
+                ORDER BY MonthlyCost DESC"; 
+                //gets the amount, when sorted
+                command.Parameters.AddWithValue("@userId", person.Id);
+
+                using var reader = command.ExecuteReader();
+                while (reader.Read())//while there is data
+                {
+                    var row = new Dictionary<string, object>();
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        row.Add(reader.GetName(i), reader.GetValue(i));
+                    }
+                    results.Add(row);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Database Error: {ex.Message}");
+            }
+
+            return results;
+        }
+        public static double CalculateSpend(User person) //Calculates the monthly spend of all expenses
+        {
+            double totalMonthly = 0;
+
+            try
+            {
+                using var connection = new SqliteConnection(ConnectionString);
+                connection.Open();
+
+                var command = connection.CreateCommand();
+
+                command.CommandText = "SELECT Amount, Frequency FROM Expenses WHERE UserId = @userId";
+                command.Parameters.AddWithValue("@userId", person.Id);
+
+                using var reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    double amount = reader.GetDouble(0);
+
+                    if (Enum.TryParse(reader.GetString(1), true, out Frequent freq))
+                    {
+                        switch (freq)
+                        {
+                            case Frequent.Daily:
+                                totalMonthly += (amount * 30);
+                                break;
+                            case Frequent.Weekly:
+                                totalMonthly += (amount * 4);
+                                break;
+                            case Frequent.Monthly:
+                                totalMonthly += amount;
+                                break;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Database Error: {ex.Message}");
+            }
+
+            return totalMonthly;
+        }
         public static double GetCompletedAmount(User person) //get % of all items done
         {
             try
@@ -243,6 +330,46 @@ namespace Todo_console_app.Data
 
             return result; // Returns an empty dictionary if no item is found
         }
+
+        public static Dictionary<string, object> GetItemByAnyIdentifier(string table, string input, User person) //get an item by its ID
+        {
+            var result = new Dictionary<string, object>();
+
+            try
+            {
+                using var connection = new SqliteConnection(ConnectionString);
+                connection.Open();
+
+                var command = connection.CreateCommand();
+
+                // We check if the input matches the ID OR the Title
+                // Note: Title uses 'LIKE' for a bit of flexibility with casing
+                command.CommandText = $@"
+            SELECT * FROM {table} 
+            WHERE (Id = @input OR Title LIKE @input) 
+            AND UserId = @userId 
+            LIMIT 1";
+
+                command.Parameters.AddWithValue("@input", input);
+                command.Parameters.AddWithValue("@userId", person.Id);
+
+                using var reader = command.ExecuteReader();
+                if (reader.Read())
+                {
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        result.Add(reader.GetName(i), reader.GetValue(i));
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Database Error: {ex.Message}");
+            }
+
+            return result;
+        }
+
         public static bool RemoveItem(string table, int itemId) //Remove an item from the DB
         {
             //prevents users being removed

@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using Todo_console_app.Data;
 using Todo_console_app.Users;
 using Todo_console_app.Updates;
+using Todo_console_app.Frequency;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 //for hashing passswords
 
@@ -315,10 +316,11 @@ namespace TestConsoleApp
                 Console.WriteLine("Select SubMenu Option:");
                 Console.WriteLine("[1] : Add item");
                 Console.WriteLine("[2] : Remove Item");
-                Console.WriteLine("[3] : Get item information");
-                Console.WriteLine("[4] : Edit item in list");
+                
+                Console.WriteLine("[3] : Edit item in list");
                 if (TableName == "ActionsToDo")
                 {
+                    Console.WriteLine("[4] : Get item information");
                     Console.WriteLine("[5] : Mark as completed");
                     Console.WriteLine("[6] : Remove completed items");
                     Console.WriteLine("[7] : Recent items added");
@@ -326,8 +328,8 @@ namespace TestConsoleApp
                 }
                 else if (TableName == "Expenses")
                 {
-                    Console.WriteLine("[5] : Total Monthly spend");
-                    Console.WriteLine("[6] : Sort items by cost per month");
+                    Console.WriteLine("[4] : Total Monthly spend");
+                    Console.WriteLine("[5] : Sort items by cost per month");
                 }
                 else
                 {
@@ -406,9 +408,9 @@ namespace TestConsoleApp
                         }
                         
                         break;
-                    case ConsoleKey.D3: //Get Item Description
-                    case ConsoleKey.NumPad3:
-                        Console.WriteLine("[3] : Get item description\n");
+                    case ConsoleKey.D4 when TableName == "ActionsToDo": //Get Item Description
+                    case ConsoleKey.NumPad4 when TableName == "ActionsToDo":
+                        Console.WriteLine("[4] : Get item description\n");
                         NumberId = ReadRequiredInt("Please enter item number: ");
 
                         Dictionary<string, object>  ItemInfo = Data.GetItemData(NumberId, TableName);
@@ -416,9 +418,9 @@ namespace TestConsoleApp
                         DisplayItemDetails(ItemInfo);
                         Buffer("");
                         break;
-                    case ConsoleKey.D4: //Edit Item
-                    case ConsoleKey.NumPad4:
-                        Console.WriteLine("[4] : Edit item in list\n");
+                    case ConsoleKey.D3: //Edit Item
+                    case ConsoleKey.NumPad3:
+                        Console.WriteLine("[3] : Edit item in list\n");
                         NumberId = ReadRequiredInt("Select item number you wish to edit: ");
 
                         //select data to modify
@@ -497,15 +499,23 @@ namespace TestConsoleApp
                             Buffer("An error occured");
                         }
                             break;
-                    case ConsoleKey.D5 when TableName == "Expenses": //Mark as completed
-                    case ConsoleKey.NumPad5 when TableName == "Expenses":
-                        Console.WriteLine("[5] : Total Monthly spend\n");
-                        Console.WriteLine("Enter ID number you want to mark as completed");
+                    case ConsoleKey.D4 when TableName == "Expenses": //Mark as completed
+                    case ConsoleKey.NumPad4 when TableName == "Expenses":
+                        Console.WriteLine("[4] : Total Monthly spend\n");
+                        Console.WriteLine("Calculating Total monthly spend");
+
+                        double totalSpend = Data.CalculateSpend(person);
+                        Console.WriteLine($"Total Monthly spend for this month: {totalSpend}");
+                        Buffer("");
                         break;
-                    case ConsoleKey.D6 when TableName == "ActionsToDo": //Remove completed items
-                    case ConsoleKey.NumPad6 when TableName == "ActionsToDo":
-                        Console.WriteLine("[6] : Sort items by cost per month\n");
-                        Console.WriteLine("Do you wish to remove completed items? y'n");
+                    case ConsoleKey.D5 when TableName == "ActionsToDo": //Remove completed items
+                    case ConsoleKey.NumPad5 when TableName == "ActionsToDo":
+                        Console.WriteLine("[5] : Sort items by cost per month\n");
+
+                        List<Dictionary<string, object>>  ExpensesSort = Data.GetExpensesList(person);
+
+                        PrintTable(ExpensesSort, "Expenses");
+                        Buffer("End of list");
                         break;
                     case ConsoleKey.D0: //Exit the progrram
                     case ConsoleKey.NumPad0:
