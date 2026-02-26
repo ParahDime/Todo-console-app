@@ -2,7 +2,7 @@
 
 # Overview
 	The project acts as a to do list, built on c# alongside SQLite. C# communicates to the database via a package, Microsoft.Data.SQLite.
-
+	The project also handles expenses as well, along with outputting all items available
 	Data is already created within seed.sql, formatted via schema.sql, allowing for usable data for the program
 # What i learnt
 	I've learned a lot from this project, as it's my first time building a project with not only 2 programming langauges, but also communication between them.
@@ -21,9 +21,19 @@
 	While not the same as an API, it does help me understand and build back up the knowledge to make calls and interact and modify data
 
 # How it works
-	The project starts by beginning to initialise the data. It runs a check within the data file itself. If the tables exist, they aren't dropped or gone over.
+	The project initialises the database. It runs a check within the data file itself. If the tables exist, they aren't dropped.
 	THEN it checks if the tables are already populated. If yes, move on. If not, it accesses seed.sql via Data.cs to populate the data
 	Should this fail, the user will be given a reason as to why it can't populate the data or seed the data
 
-	The user is initially given two options, login as well as create an account. 
-	To login, the data undergoes hashing and salting in order to protect the data, using that to compare it, rather than decryption. 
+	The user is initially given two options, login and create an account. 
+	To login, password undergoes hashing and salting and comparing rather than decryption. 
+
+	The user is brought to another screen: To do list and expense
+
+	The do list has 8 options, all in relation to its data.
+	The user is prompted to handle calls to data, by including data the user needs to input, and validate with a yes/no option
+
+	The program also handled database errors, outputting them. While initially a debugging option,
+	this also allows the user to understand errors, such as invalid inputs, or file a ticket to handle such errors
+
+	

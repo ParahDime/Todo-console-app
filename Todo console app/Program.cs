@@ -18,7 +18,9 @@ namespace TestConsoleApp
     internal class Program
     {
 
-        //print all information on the table
+        /// <summary>
+        /// Generic function handling output of all Ids in the table returned
+        /// </summary>
         public static void PrintTable(List<Dictionary <string, object>> TableData, string TableName)
         {
             if (TableData.Count == 0) //empty table
@@ -80,7 +82,9 @@ namespace TestConsoleApp
 
         }
 
-        //
+        /// <summary>
+        /// Display information on a row of data obtained
+        /// </summary>
         public static void DisplayItemDetails(Dictionary<string, object> ItemData)
         {
             if (ItemData == null || ItemData.Count == 0)
@@ -111,14 +115,19 @@ namespace TestConsoleApp
             Console.WriteLine("---------------------\n");
         }
 
-        //Works as a buffer for code, allowing code to wait for a key entry to check if information is read
+        /// <summary>
+        /// Buffer function allowing output to be read, return line ReadKey()
+        /// </summary>
         public static void Buffer(string prompt)
         {
             Console.WriteLine($"{prompt}. Press any key to continue.");
             Console.ReadKey();
         }
 
-        //used when empty strings not allowed
+        /// <summary>
+        /// Helper functions designed to return a specific input
+        /// Guard condition to prevent common errors (null input)
+        /// </summary>
         static string ReadRequiredInput(string prompt)
         {
             string? Input;
@@ -133,7 +142,6 @@ namespace TestConsoleApp
             return Input;
         }
 
-        //Used when a character is required for a yes no option
         static char ReadRequiredChar(string prompt)
         {
             string Input;
@@ -157,7 +165,6 @@ namespace TestConsoleApp
             return ParseInput;
         }
 
-        //Used for getting a required int
         static int ReadRequiredInt(string prompt)
         {
             string Input;
@@ -174,15 +181,15 @@ namespace TestConsoleApp
             return ParseInput;
         }
 
-        //login
+        /// <summary>
+        /// Initial functions to handle User data
+        /// </summary>
+
         static User Login()
         {
-            //ask for user information
             string username = ReadRequiredInput("Please enter your username:    ");
-            string password = ReadRequiredInput("Please enter your password:    ");
-            //salt and hash password
+            string password = ReadRequiredInput("Please enter your password:    ");   
             Console.Clear();
-            //check if in systems
             if (Data.validateUser(username, password))
             {
                 User person = Data.GetUser(username);
@@ -192,25 +199,93 @@ namespace TestConsoleApp
             }
             else //user not in system
             {
-                Buffer("Invalid Credentials.");
+                Buffer("Invalid Credentials");
+                Console.Clear();
                 return null;
             }
         }
 
         static void CreateAcc()
         {
-            //get user details
             string Username = ReadRequiredInput("Please enter a username:    ");
             string Password = ReadRequiredInput("Please enter a password:    ");
 
-            //input into sql database
             Data.createUser(Username, Password);
             Buffer($"User {Username} has been initialised");
         }
 
+        /// <summary>
+        /// Function allowing user to choose the menu entered
+        /// </summary>
+        static void PrintMainMenu(ref string TableName)
+        {
+            TableName = null;
+            Console.WriteLine("Select Menu Option:\n");
+            Console.WriteLine("[1] : To Do List");
+            Console.WriteLine("[2] : Expenses");
+            Console.WriteLine("[0] : Exit");
+            ConsoleKeyInfo Menu = Console.ReadKey();
+
+            switch (Menu.Key)
+            {
+                case ConsoleKey.D1: //Go to ToDo List
+                case ConsoleKey.NumPad1:
+                    TableName = "ActionsToDo";
+                    break;
+
+                case ConsoleKey.D2: //Go to Expenses
+                case ConsoleKey.NumPad2:
+                    TableName = "Expenses";
+                    break;
+
+                case ConsoleKey.D0: //Exit the progrram
+                case ConsoleKey.NumPad0:
+                    Console.WriteLine("\n\nProgram Terminated");
+                    return;
+
+                default:
+                    Buffer("\n\nInvalid selection");
+                    break;
+            }
+
+            Console.Clear();
+        }
+
+        static ConsoleKeyInfo PrintSubMenu(string TableName, User person)
+        {
+            List<Dictionary<string, object>> TableData = Data.GetAllItems(TableName, person.Id);
+            PrintTable(TableData, TableName);
+
+            Console.WriteLine("Select SubMenu Option:");
+            Console.WriteLine("[1] : Add item");
+            Console.WriteLine("[2] : Remove Item");
+
+            Console.WriteLine("[3] : Edit item in list");
+            if (TableName == "ActionsToDo")
+            {
+                Console.WriteLine("[4] : Get item information");
+                Console.WriteLine("[5] : Mark as completed");
+                Console.WriteLine("[6] : Remove completed items");
+                Console.WriteLine("[7] : Recent items added");
+                Console.WriteLine("[8] : Calculate current list completion");
+            }
+            else if (TableName == "Expenses")
+            {
+                Console.WriteLine("[4] : Total Monthly spend");
+                Console.WriteLine("[5] : Sort items by cost per month");
+            }
+            else
+            {
+
+            }
+
+            Console.WriteLine("[0] : Return to menu");
+
+            return Console.ReadKey();
+        }
+
         static void Main(string[] args)
         {
-            //create variables
             System.Console.WriteLine("Starting...");
 
             //create instance
@@ -220,7 +295,6 @@ namespace TestConsoleApp
             }
             Console.WriteLine("Database initialised.");
 
-            //ONLY run if not already populated
             if (Data.IsDBEmpty())
             {
                 if (!Data.Seed())
@@ -229,31 +303,23 @@ namespace TestConsoleApp
                 }
                 Console.WriteLine("Database populated");
             }
+            Console.Clear();
 
-            //User person;
             bool AccessGRANT = false;
             bool Running = true;
+
             string TableName = null;
-            
 
+            User person = null;          
 
-
-            User person = null;
-            ConsoleKeyInfo SubMenu;
-            ConsoleKeyInfo Menu; //selects the menu
-
-            List<Dictionary<string, object>> TableData;
-
-
-
-            Console.Clear();
-            //auth loop to check if user in system
+            ///
+            /// Authentication loop
+            ///
             while (!AccessGRANT)
             {
-                Console.WriteLine("");
                 Console.WriteLine("Please select an option:");
                 Console.WriteLine("[1] : Login \n[2] : Create Account \n[0] : Exit");
-                Menu = Console.ReadKey();
+                ConsoleKeyInfo Menu = Console.ReadKey();
 
                 Console.WriteLine();
 
@@ -262,7 +328,7 @@ namespace TestConsoleApp
                     case ConsoleKey.D1: //Login
                     case ConsoleKey.NumPad1:
                         person = Login();
-                        if(person != null) //if login successful
+                        if(person != null) 
                         {
                             AccessGRANT = true;
                         }
@@ -284,72 +350,16 @@ namespace TestConsoleApp
                 }                
             }
 
-            //items in program
             while(Running)
             {
+
+                ///Loop to continue until TableName obtained
                 while (TableName == null) {
-                    TableName = null;
-                    Console.WriteLine("Select Menu Option:\n");
-                    Console.WriteLine("[1] : To Do List");
-                    Console.WriteLine("[2] : Expenses");
-                    Console.WriteLine("[0] : Exit");
-                    Menu = Console.ReadKey();
-
-                    switch (Menu.Key)
-                    {
-                        case ConsoleKey.D1: //Go to ToDo List
-                        case ConsoleKey.NumPad1:
-                            TableName = "ActionsToDo";
-                            break;
-
-                        case ConsoleKey.D2: //Go to Expenses
-                        case ConsoleKey.NumPad2:
-                            TableName = "Expenses";
-                            break;
-
-                        case ConsoleKey.D0: //Exit the progrram
-                        case ConsoleKey.NumPad0:
-                            Console.WriteLine("\n\nProgram Terminated");
-                            return;
-
-                        default:
-                            Buffer("\n\nInvalid selection");
-                            break;
-                    }
-
-                    Console.Clear();
+                    PrintMainMenu(ref TableName);
                 }
 
-                //print all items
-                TableData = Data.GetAllItems(TableName, person.Id);
-                PrintTable(TableData, TableName);
+                ConsoleKeyInfo SubMenu = PrintSubMenu(TableName, person);
 
-                Console.WriteLine("Select SubMenu Option:");
-                Console.WriteLine("[1] : Add item");
-                Console.WriteLine("[2] : Remove Item");
-                
-                Console.WriteLine("[3] : Edit item in list");
-                if (TableName == "ActionsToDo")
-                {
-                    Console.WriteLine("[4] : Get item information");
-                    Console.WriteLine("[5] : Mark as completed");
-                    Console.WriteLine("[6] : Remove completed items");
-                    Console.WriteLine("[7] : Recent items added");
-                    Console.WriteLine("[8] : Calculate current list completion");
-                }
-                else if (TableName == "Expenses")
-                {
-                    Console.WriteLine("[4] : Total Monthly spend");
-                    Console.WriteLine("[5] : Sort items by cost per month");
-                }
-                else
-                {
-
-                }
-                
-                Console.WriteLine("[0] : Return to menu");
-
-                SubMenu = Console.ReadKey();
                 string Name = null;
                 string Description = null;
                 char YesNo = ' ';
@@ -380,7 +390,6 @@ namespace TestConsoleApp
                                 {
                                     Buffer("An error occured");
                                 }
-
                             }
                             else //No or not the correct input
                             {
@@ -391,8 +400,10 @@ namespace TestConsoleApp
                         {
                             Amount = ReadRequiredInt("Enter the amount (in £): ");
                             Console.WriteLine("Enter frequency:\n[1] Daily\n[2] Weekly\n[3] Monthly");
+
                             int freqChoice = ReadRequiredInt("Choice: ");
                             Frequent chosenFreq = (Frequent)(freqChoice);
+
                             Console.WriteLine($"Name: {Name}\n Amount: {Amount} \n Frequency: {freqChoice}");
                             YesNo = ReadRequiredChar("Are these details correct? y/n");
                             if (YesNo == 'y')
@@ -414,7 +425,7 @@ namespace TestConsoleApp
                     case ConsoleKey.NumPad2:
                         Console.WriteLine("[2] : Remove Item\n");
                         int removeNum = ReadRequiredInt("Enter item ID you wish to remove: ");
-                        //input number
+
                         YesNo = ReadRequiredChar($"Remove item {removeNum}? \n y/n");
                         if(YesNo == 'y')
                         {
@@ -433,21 +444,11 @@ namespace TestConsoleApp
                         }
                         
                         break;
-                    case ConsoleKey.D4 when TableName == "ActionsToDo": //Get Item Description
-                    case ConsoleKey.NumPad4 when TableName == "ActionsToDo":
-                        Console.WriteLine("[4] : Get item description\n");
-                        NumberId = ReadRequiredInt("Please enter item number: ");
-
-                        Dictionary<string, object>  ItemInfo = Data.GetItemData(NumberId, TableName);
-
-                        DisplayItemDetails(ItemInfo);
-                        Buffer("");
-                        break;
                     case ConsoleKey.D3: //Edit Item
                     case ConsoleKey.NumPad3:
                         Console.WriteLine("[3] : Edit item in list\n");
                         NumberId = ReadRequiredInt("Select item number you wish to edit: ");
-                        ItemInfo = Data.GetItemData(NumberId, TableName);
+                        Dictionary<string, object> ItemInfo = Data.GetItemData(NumberId, TableName);
 
                         if (ItemInfo.Count == 0)
                         {
@@ -487,6 +488,16 @@ namespace TestConsoleApp
                             Buffer("Update was not successful");
                         }
                             break;
+                    case ConsoleKey.D4 when TableName == "ActionsToDo": //Get Item Description
+                    case ConsoleKey.NumPad4 when TableName == "ActionsToDo":
+                        Console.WriteLine("[4] : Get item description\n");
+                        NumberId = ReadRequiredInt("Please enter item number: ");
+
+                         ItemInfo = Data.GetItemData(NumberId, TableName);
+
+                        DisplayItemDetails(ItemInfo);
+                        Buffer("");
+                        break;
                     case ConsoleKey.D5 when TableName == "ActionsToDo": //Mark as completed
                     case ConsoleKey.NumPad5 when TableName == "ActionsToDo":
                         Console.WriteLine("[5] : Mark as completed\n");

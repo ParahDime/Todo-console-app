@@ -8,7 +8,7 @@ namespace Todo_console_app.Frequency
 {
     internal class Frequency
     {
-        public enum Frequent
+        public enum Frequent //handles frequency of expense
         {
             Daily = 1,
             Weekly = 2,

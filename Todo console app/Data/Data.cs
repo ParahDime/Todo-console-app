@@ -21,7 +21,14 @@ namespace Todo_console_app.Data
     internal class Data
     {
 
+        //Connection string allows for non repeating location, Foreign keys turned on
         private const string ConnectionString = "Data Source=app.db; Foreign Keys = True";
+
+        /// <summary>
+        /// SQL calls use try catch exceptions
+        /// Used as a way to handle breakdowns in errors such as incorrect format
+        /// Without breaking the program, errors also handled in the Program.cs file
+        /// </summary>
 
         //initialise SQL Data
         public static bool Initialise()
@@ -52,7 +59,8 @@ namespace Todo_console_app.Data
             }
         }
 
-        public static bool Seed() //Populate the data if purged
+        //Populate the data if purged
+        public static bool Seed()
         {
             try
             {
@@ -77,7 +85,8 @@ namespace Todo_console_app.Data
             }
         }
 
-        public static bool IsDBEmpty() //check if the DB is empty
+        //check if the DB is empty
+        public static bool IsDBEmpty()
         {
             using var connection = new SqliteConnection(ConnectionString);
             connection.Open();
@@ -87,6 +96,163 @@ namespace Todo_console_app.Data
             long count = (long)command.ExecuteScalar();
 
             return count == 0;
+        }
+
+        //create a salt for passwords
+        public static string GenerateSalt()
+        {
+            byte[] salt = RandomNumberGenerator.GetBytes(16);
+            return Convert.ToBase64String(salt);
+        }
+
+        /// <summary>
+        /// Password hashing function using SHA256 with pbkdf2
+        /// </summary>
+        /// <param name="password"></param>
+        /// <param name="storedSalt"></param>
+        public static string HashPassword(string password, string storedSalt)
+        {
+            byte[] salt = Convert.FromBase64String(storedSalt);
+
+            using var pbkdf2 = new Rfc2898DeriveBytes(
+                password,
+                salt,
+                100_000,
+                HashAlgorithmName.SHA256
+            );
+
+            byte[] hash = pbkdf2.GetBytes(32); //256-bit key
+            return Convert.ToBase64String(hash);
+        }
+
+
+        //check the username exists
+        public static bool validateUser(string username, string password)
+        {
+            try
+            {
+                using var connection = new SqliteConnection(ConnectionString);
+                connection.Open();
+
+                //check if the username exists within the username table
+                var command = connection.CreateCommand();
+                command.CommandText = @"
+                SELECT Passwrd_Hash, Salt
+                FROM Users
+                WHERE Username = @Username;;
+            ";
+
+                command.Parameters.AddWithValue("@Username", username);
+
+                var result = command.ExecuteReader();
+
+                //if person is not found
+                if (!result.Read())
+                {
+                    Console.WriteLine("No person found");
+                    return false;
+                }
+
+                string storedHash = result.GetString(0);
+                string storedSalt = result.GetString(1);
+
+                string computedHash = HashPassword(password, storedSalt);
+
+                //return the comparison as a bool checks whether passwords match
+                return CryptographicOperations.FixedTimeEquals(
+                        Convert.FromBase64String(computedHash),
+                        Convert.FromBase64String(storedHash)
+                    );
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"DB Error: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Gets information from User table, outputs as a result
+        /// </summary>
+        public static User GetUser(string username)
+        {
+            using var connection = new SqliteConnection(ConnectionString);
+            connection.Open();
+
+            var command = connection.CreateCommand();
+            command.CommandText = "SELECT UserId, Username FROM Users WHERE Username = @Username";
+            command.Parameters.AddWithValue("@Username", username);
+
+            using var reader = command.ExecuteReader();
+
+            if (reader.Read())
+            {
+                return new User
+                {
+                    Id = reader.GetInt32(0),
+                    Username = reader.GetString(1)
+                };
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Creates a user, handling schema requirements
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="password"></param>
+        public static void createUser(string username, string password)
+        {
+            try
+            {
+                string salt = GenerateSalt();
+                password = HashPassword(password, salt);
+
+                using var connection = new SqliteConnection(ConnectionString);
+                connection.Open();
+
+                //command used over direct as it allows visible seperation
+                var command = connection.CreateCommand();
+                command.CommandText = @"INSERT INTO Users (Username, Salt, Passwrd_Hash)
+                    VALUES (@Username, @Salt, @PasswordHash)
+                    ";
+
+                command.Parameters.AddWithValue("@Username", username);
+                command.Parameters.AddWithValue("@Salt", salt);
+                command.Parameters.AddWithValue("@PasswordHash", password);
+
+                var result = command.ExecuteScalar();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"DB Error: {ex.Message}");
+            }
+        }
+
+        //list all items in a table
+        public static List<Dictionary<string, object>> GetAllItems(string table, int UserId)
+        {
+            using var connection = new SqliteConnection(ConnectionString);
+            var results = new List<Dictionary<string, object>>();
+            connection.Open();
+
+            var command = connection.CreateCommand();
+            command.CommandText = $"SELECT * FROM {table} WHERE UserId = @UserId";
+
+            command.Parameters.AddWithValue("@UserId", UserId);
+            using var reader = command.ExecuteReader();
+
+            //Reading the data from the executed query
+            while (reader.Read())
+            {
+                var row = new Dictionary<string, object>();
+                for (int i = 0; i < reader.FieldCount; i++)
+                {
+                    row.Add(reader.GetName(i), reader.GetValue(i));
+                }
+                results.Add(row);
+            }
+            return results;
         }
 
         public static List<Dictionary<string, object>> GetExpensesList(User person) //Gets the expenses list in order
@@ -247,7 +413,7 @@ namespace Todo_console_app.Data
                 using var connection = new SqliteConnection(ConnectionString);
                 connection.Open();
 
-                // 1. Check if the item exists and what its current status is
+                //Check if the item exists
                 var checkCmd = connection.CreateCommand();
                 checkCmd.CommandText = "SELECT Is_Complete FROM ActionsToDo WHERE Id = @Id AND UserId = @UserId";
                 checkCmd.Parameters.AddWithValue("@Id", Id);
@@ -338,7 +504,7 @@ namespace Todo_console_app.Data
                 using var connection = new SqliteConnection(ConnectionString);
                 connection.Open();
 
-                var ColumnSettings = UpdatedRow.Keys.Select(k => $"{k} = @{k}");
+                var ColumnSettings = UpdatedRow.Keys.Select(k => $"{k} = @{k}"); //each item variable = @variable in query
                 string SetClause = string.Join(", ", ColumnSettings);
 
                 var command = connection.CreateCommand();
@@ -415,6 +581,9 @@ namespace Todo_console_app.Data
            
         }
 
+        /// <summary>
+        /// Expenses item is added to the list, including exception handling
+        /// </summary>
         public static bool AddExpenseItem(string Title, Frequent freq, int Amount, User person)
         {
             try
@@ -443,162 +612,6 @@ namespace Todo_console_app.Data
                 Console.WriteLine($"DB Error: {ex.Message}");
                 return false;
             }
-        }
-
-        //create a salt for passwords
-        public static string GenerateSalt()
-        {
-            byte[] salt = RandomNumberGenerator.GetBytes(16);
-            return Convert.ToBase64String(salt);
-        }
-
-        public static string HashPassword(string password, string storedSalt)
-        {
-            byte[] salt = Convert.FromBase64String(storedSalt);
-
-            using var pbkdf2 = new Rfc2898DeriveBytes(
-                password,
-                salt,
-                100_000,                 // iteration count
-                HashAlgorithmName.SHA256
-            );
-
-            byte[] hash = pbkdf2.GetBytes(32); // 256-bit key
-            return Convert.ToBase64String(hash);
-        }
-
-        
-        //check the username exists
-        public static bool validateUser(string username, string password)
-        {
-            try
-            {
-                using var connection = new SqliteConnection(ConnectionString);
-                connection.Open();
-
-                //check if the username exists within the username table
-                var command = connection.CreateCommand();
-                command.CommandText = @"
-                SELECT Passwrd_Hash, Salt
-                FROM Users
-                WHERE Username = @Username;;
-            ";
-
-                command.Parameters.AddWithValue("@Username", username);
-
-                var result = command.ExecuteReader();
-
-                //if person is not found
-                if (!result.Read())
-                {
-                    Console.WriteLine("No person found");
-                    return false;
-                }
-
-                string storedHash = result.GetString(0);
-                string storedSalt = result.GetString(1);
-
-                string computedHash = HashPassword(password, storedSalt);
-
-                return CryptographicOperations.FixedTimeEquals( //compare the new result to the table, check if there
-                        Convert.FromBase64String(computedHash),
-                        Convert.FromBase64String(storedHash)
-                    );
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"DB Error: {ex.Message}");
-                return false;
-            }
-        }
-
-        public static User GetUser(string username)
-        {
-            using var connection = new SqliteConnection(ConnectionString);
-            connection.Open();
-
-            var command = connection.CreateCommand();
-            command.CommandText = "SELECT UserId, Username FROM Users WHERE Username = @Username";
-            command.Parameters.AddWithValue("@Username", username);
-
-            using var reader = command.ExecuteReader();
-
-            if (reader.Read())
-            {
-                return new User
-                {
-                    Id = reader.GetInt32(0),
-                    Username = reader.GetString(1)
-                };
-            }
-
-            // 5. If no user was found, return null
-            return null;
-        }
-
-        public static void createUser(string username, string password)
-        {
-            try
-            {
-                string salt = GenerateSalt();
-                password = HashPassword(password, salt);
-
-                //Console.WriteLine(password);
-                //Console.WriteLine(salt);
-                using var connection = new SqliteConnection(ConnectionString);
-                connection.Open();
-
-                //create command for generating a new user
-                var command = connection.CreateCommand();
-                command.CommandText = @"INSERT INTO Users (Username, Salt, Passwrd_Hash)
-            VALUES (@Username, @Salt, @PasswordHash)
-            ";
-
-                command.Parameters.AddWithValue("@Username", username);
-                command.Parameters.AddWithValue("@Salt", salt);
-                command.Parameters.AddWithValue("@PasswordHash", password);
-
-                var result = command.ExecuteScalar();
-            } catch (Exception ex)
-            {
-                Console.WriteLine($"DB Error: {ex.Message}");
-            }
-        }
-        //count all items within a table
-        /*public static void GetCount(string table)
-        {
-            using var connection = new SqliteConnection(ConnectionString);
-
-
-        }
-        */
-
-
-        //list all items in a table
-        public static List<Dictionary<string, object>> GetAllItems(string table, int UserId)
-        {
-            using var connection = new SqliteConnection(ConnectionString);
-            var results = new List<Dictionary<string, object>>();
-            connection.Open();
-
-            var command = connection.CreateCommand();
-            command.CommandText = $"SELECT * FROM {table} WHERE UserId = @UserId";
-
-            command.Parameters.AddWithValue("@UserId", UserId);
-            using var reader = command.ExecuteReader();
-
-            //read data from sql query
-            while (reader.Read())
-            {
-                var row = new Dictionary<string, object>();
-                for (int i = 0; i < reader.FieldCount; i++)
-                {
-                    // reader.GetName(i) gets the column name from the SQL result
-                    row.Add(reader.GetName(i), reader.GetValue(i));
-                }
-                results.Add(row);
-            }
-            return results;
-        }
+        }     
     }
 }
