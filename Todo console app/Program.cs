@@ -5,10 +5,11 @@ using System;
 using System.IO.Pipes;
 using System.Runtime.CompilerServices;
 using Todo_console_app.Data;
-using Todo_console_app.Users;
-using Todo_console_app.Updates;
 using Todo_console_app.Frequency;
+using Todo_console_app.Updates;
+using Todo_console_app.Users;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using static Todo_console_app.Frequency.Frequency;
 //for hashing passswords
 
 namespace TestConsoleApp
@@ -33,7 +34,7 @@ namespace TestConsoleApp
             }
             else if (TableName == "Expenses")
             {
-                columns = new string[] { "Id", "Title", "Amount" };
+                columns = new string[] { "Id", "Title", "Amount", "Frequency" };
             }
             else
             {
@@ -67,6 +68,11 @@ namespace TestConsoleApp
                         output = $"£{Convert.ToDouble(value):F2}";
                     }
 
+                    if (col == "Frequency")
+                    {
+                        output = $"{Convert.ToString(value) ?? "N/A"}";
+                    }
+
                     Console.Write($"{output,-15} | ");
                 }
                 Console.WriteLine();
@@ -74,6 +80,7 @@ namespace TestConsoleApp
 
         }
 
+        //
         public static void DisplayItemDetails(Dictionary<string, object> ItemData)
         {
             if (ItemData == null || ItemData.Count == 0)
@@ -103,6 +110,8 @@ namespace TestConsoleApp
             }
             Console.WriteLine("---------------------\n");
         }
+
+        //Works as a buffer for code, allowing code to wait for a key entry to check if information is read
         public static void Buffer(string prompt)
         {
             Console.WriteLine($"{prompt}. Press any key to continue.");
@@ -124,6 +133,7 @@ namespace TestConsoleApp
             return Input;
         }
 
+        //Used when a character is required for a yes no option
         static char ReadRequiredChar(string prompt)
         {
             string Input;
@@ -147,6 +157,7 @@ namespace TestConsoleApp
             return ParseInput;
         }
 
+        //Used for getting a required int
         static int ReadRequiredInt(string prompt)
         {
             string Input;
@@ -354,36 +365,50 @@ namespace TestConsoleApp
                         Name = ReadRequiredInput("Enter item name: ");
                         if (TableName == "ActionsToDo")
                         {
-
                             Description = ReadRequiredInput("Enter the item description: ");
                             Console.WriteLine($"Name: {Name}\n Description: {Description}");
+
+                            YesNo = ReadRequiredChar("Are these details correct? y/n");
+
+                            if (YesNo == 'y')
+                            {
+                                if (Data.AddToDoItem(Name, Description, person))
+                                {
+                                    Buffer($"{Name} was successfully added to the database");
+                                }
+                                else
+                                {
+                                    Buffer("An error occured");
+                                }
+
+                            }
+                            else //No or not the correct input
+                            {
+                                Buffer("Input was not added");
+                            }
                         }
                         else //table name == expenses
                         {
                             Amount = ReadRequiredInt("Enter the amount (in £): ");
-                            //frequency = ReadRequiredInt("Enter how often the expense occurs\n[1] Daily\n[2] Weekly\n[3] Monthly");
-                            Console.WriteLine($"Name: {Name}\n Amount: {Amount} \n Frequency: ");
-
-                        }
+                            Console.WriteLine("Enter frequency:\n[1] Daily\n[2] Weekly\n[3] Monthly");
+                            int freqChoice = ReadRequiredInt("Choice: ");
+                            Frequent chosenFreq = (Frequent)(freqChoice);
+                            Console.WriteLine($"Name: {Name}\n Amount: {Amount} \n Frequency: {freqChoice}");
                             YesNo = ReadRequiredChar("Are these details correct? y/n");
-                        
-                         if(YesNo == 'y')
-                         {
-                            if(Data.AddToDoItem(Name, Description, person))
-                            { 
-                                Buffer($"{Name} was successfully added to the database");
-                            }
-                            else
+                            if (YesNo == 'y')
                             {
-                                Buffer("An error occured");
+                                // You will need to create this function in Data.cs
+                                if (Data.AddExpenseItem(Name, chosenFreq, Amount, person))
+                                    Buffer($"{Name} was successfully added to your Expenses");
+                                else
+                                    Buffer("An error occurred while saving the expense");
                             }
-
-                         }
-                         else //No or not the correct input
-                         {
-                            Buffer("Input was not added");
-                         }
-                         
+                            else //No or not the correct input
+                             {
+                                Buffer("Input was not added");
+                             }
+                        }
+   
                         break;
                     case ConsoleKey.D2: //Remove Item
                     case ConsoleKey.NumPad2:
@@ -422,14 +447,46 @@ namespace TestConsoleApp
                     case ConsoleKey.NumPad3:
                         Console.WriteLine("[3] : Edit item in list\n");
                         NumberId = ReadRequiredInt("Select item number you wish to edit: ");
+                        ItemInfo = Data.GetItemData(NumberId, TableName);
 
+                        if (ItemInfo.Count == 0)
+                        {
+                            Console.WriteLine("Not found!"); 
+                            break;
+                        }
                         //select data to modify
                         Console.WriteLine("Select which part you would like to edit: ");
+                        var updates = new Dictionary<string, object>();
 
-                        //confirm
+                        foreach (var key in ItemInfo.Keys)
+                        {
+                            if (key == "Id" || key == "UserId" || key == "Time_Create") continue; // Don't edit these!
 
-                        //yn
-                        break;
+                            Console.Write($"{key} (Current: {ItemInfo[key]}): ");
+                            string input = Console.ReadLine();
+
+                            // If user presses Enter without typing, we keep the old value
+                            if (string.IsNullOrWhiteSpace(input))
+                            {
+                                updates[key] = ItemInfo[key];
+                            }
+                            else
+                            {
+                                // Simple logic to handle numbers vs strings
+                                if (int.TryParse(input, out int intVal)) updates[key] = intVal;
+                                else if (double.TryParse(input, out double dblVal)) updates[key] = dblVal;
+                                else updates[key] = input;
+                            }
+                        }
+
+                        // 3. Send to Database
+                        if (Data.UpdateData(TableName, updates, person))
+                            Buffer("Update successful!");
+                        else
+                        {
+                            Buffer("Update was not successful");
+                        }
+                            break;
                     case ConsoleKey.D5 when TableName == "ActionsToDo": //Mark as completed
                     case ConsoleKey.NumPad5 when TableName == "ActionsToDo":
                         Console.WriteLine("[5] : Mark as completed\n");
@@ -508,8 +565,8 @@ namespace TestConsoleApp
                         Console.WriteLine($"Total Monthly spend for this month: {totalSpend}");
                         Buffer("");
                         break;
-                    case ConsoleKey.D5 when TableName == "ActionsToDo": //Remove completed items
-                    case ConsoleKey.NumPad5 when TableName == "ActionsToDo":
+                    case ConsoleKey.D5 when TableName == "Expenses": //Remove completed items
+                    case ConsoleKey.NumPad5 when TableName == "Expenses":
                         Console.WriteLine("[5] : Sort items by cost per month\n");
 
                         List<Dictionary<string, object>>  ExpensesSort = Data.GetExpensesList(person);

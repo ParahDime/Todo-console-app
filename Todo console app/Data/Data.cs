@@ -312,46 +312,7 @@ namespace Todo_console_app.Data
 
                 var command = connection.CreateCommand();
                 command.CommandText = $"SELECT * FROM {Table} WHERE Id = @Id LIMIT 1";
-                command.Parameters.AddWithValue("@id", Id);
-
-                using var reader = command.ExecuteReader();
-                if (reader.Read())
-                {
-                    for (int i = 0; i < reader.FieldCount; i++)
-                    {
-                        result.Add(reader.GetName(i), reader.GetValue(i));
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Database Error: {ex.Message}");
-            }
-
-            return result; // Returns an empty dictionary if no item is found
-        }
-
-        public static Dictionary<string, object> GetItemByAnyIdentifier(string table, string input, User person) //get an item by its ID
-        {
-            var result = new Dictionary<string, object>();
-
-            try
-            {
-                using var connection = new SqliteConnection(ConnectionString);
-                connection.Open();
-
-                var command = connection.CreateCommand();
-
-                // We check if the input matches the ID OR the Title
-                // Note: Title uses 'LIKE' for a bit of flexibility with casing
-                command.CommandText = $@"
-            SELECT * FROM {table} 
-            WHERE (Id = @input OR Title LIKE @input) 
-            AND UserId = @userId 
-            LIMIT 1";
-
-                command.Parameters.AddWithValue("@input", input);
-                command.Parameters.AddWithValue("@userId", person.Id);
+                command.Parameters.AddWithValue("@Id", Id);
 
                 using var reader = command.ExecuteReader();
                 if (reader.Read())
@@ -368,6 +329,35 @@ namespace Todo_console_app.Data
             }
 
             return result;
+        }
+
+        public static bool UpdateData(string table, Dictionary<string, object> UpdatedRow, User person) //CRUD: Update
+        {
+            try
+            {
+                using var connection = new SqliteConnection(ConnectionString);
+                connection.Open();
+
+                var ColumnSettings = UpdatedRow.Keys.Select(k => $"{k} = @{k}");
+                string SetClause = string.Join(", ", ColumnSettings);
+
+                var command = connection.CreateCommand();
+                command.CommandText = $"UPDATE {table} SET {SetClause} WHERE Id = @TargetId";
+
+                //set each parameter in the new row
+                foreach (var entry in UpdatedRow)
+                {
+                    command.Parameters.AddWithValue($"@{entry.Key}", entry.Value ?? DBNull.Value);
+                }
+                command.Parameters.AddWithValue("@TargetId", person.Id);
+
+                return command.ExecuteNonQuery() > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Update Error: {ex.Message}");
+                return false;
+            }
         }
 
         public static bool RemoveItem(string table, int itemId) //Remove an item from the DB
@@ -425,7 +415,7 @@ namespace Todo_console_app.Data
            
         }
 
-        public static bool AddExpenseItem(string Title, int Frequency, int Amount, User person)
+        public static bool AddExpenseItem(string Title, Frequent freq, int Amount, User person)
         {
             try
             {
@@ -435,12 +425,12 @@ namespace Todo_console_app.Data
                 var command = connection.CreateCommand();
                 command.CommandText = @"
                 INSERT INTO Expenses (UserId, Amount, Frequency, Title) 
-                VALUES (@UserId, @Amount, @Frequency, @Tile)"";
-                ";
+                VALUES (@UserId, @Amount, @Frequency, @Title)";
+
 
                 command.Parameters.AddWithValue("@UserId", person.Id);
                 command.Parameters.AddWithValue("@Amount", Amount);
-                command.Parameters.AddWithValue("@Frequency", Frequency);
+                command.Parameters.AddWithValue("@Frequency", freq.ToString());
                 command.Parameters.AddWithValue("@Title", Title);
 
                 var result = command.ExecuteNonQuery();
